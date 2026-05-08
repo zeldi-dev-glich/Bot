@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje: Çok Amaçlı Kontrol Paneli</title>
+    <style>
+        :root {
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --accent-color: #3498db;
+            --up-color: #2ecc71;
+            --down-color: #e74c3c;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 { font-size: 1.5rem; font-weight: 700; color: var(--accent-color); }
+
+        /* Kart Yapısı */
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Borsa Satırları */
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #f9f9f9;
+        }
+
+        .price-up { color: var(--up-color); font-weight: bold; }
+        .price-down { color: var(--down-color); font-weight: bold; }
+
+        /* Haber Listesi */
+        .news-item {
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .news-time {
+            font-size: 0.7rem;
+            color: #95a5a6;
+            display: block;
+        }
+
+        /* Kontrol Butonları */
+        .btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .btn:active { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>SmartBot Dashboard</h1>
+        <p style="font-size: 0.8rem; color: #7f8c8d;">Anlık Borsa & Haber Takip Paneli</p>
+    </header>
+
+    <!-- Borsa Kartı -->
+    <div class="card">
+        <div class="card-title">
+            <span>📈 Piyasa Durumu</span>
+            <span style="font-size: 0.7rem; color: #95a5a6;">Canlı (BTC/USD)</span>
+        </div>
+        <div id="market-data">
+            <div class="data-row">
+                <span>Bitcoin (BTC)</span>
+                <span class="price-up" id="btc-price">Yükleniyor...</span>
+            </div>
+            <div class="data-row">
+                <span>Ethereum (ETH)</span>
+                <span class="price-up" id="eth-price">Yükleniyor...</span>
+            </div>
+            <div class="data-row">
+                <span>Dolar/TL</span>
+                <span id="usd-price">32.45 ₺</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Haber Kartı -->
+    <div class="card">
+        <div class="card-title">📰 Son Dakika Ajansı</div>
+        <div id="news-data">
+            <div class="news-item">
+                <span class="news-time">10 dk önce</span>
+                Teknoloji dünyasında yeni güvenlik açığı tespit edildi.
+            </div>
+            <div class="news-item">
+                <span class="news-time">25 dk önce</span>
+                Merkez Bankası faiz kararını açıkladı.
+            </div>
+        </div>
+    </div>
+
+    <!-- Kontrol Paneli -->
+    <div class="card">
+        <div class="card-title">⚙️ Bot Ayarları</div>
+        <button class="btn" onclick="refreshData()">Verileri Güncelle</button>
+        <p style="font-size: 0.7rem; margin-top: 10px; text-align: center;">Bot Durumu: <span style="color: green;">Aktif</span></p>
+    </div>
+</div>
+
+<script>
+    // Basit bir API simülasyonu ve Veri Çekme Fonksiyonu
+    async function refreshData() {
+        const btcPriceElement = document.getElementById('btc-price');
+        btcPriceElement.innerText = "Güncelleniyor...";
+
+        try {
+            // Binance üzerinden gerçek BTC fiyatını çekme örneği
+            const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+            const data = await response.json();
+            const price = parseFloat(data.price).toFixed(2);
+            
+            btcPriceElement.innerText = "$" + price;
+            btcPriceElement.className = "price-up";
+        } catch (error) {
+            btcPriceElement.innerText = "Hata!";
+            console.error("Veri çekilemedi:", error);
+        }
+    }
+
+    // Sayfa açıldığında verileri çek
+    window.onload = refreshData;
+</script>
+
+</body>
+</html>
