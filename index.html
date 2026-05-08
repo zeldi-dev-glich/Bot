@@ -3,170 +3,308 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proje: Çok Amaçlı Kontrol Paneli</title>
+    <title>OSINT Hub - Mor Neon</title>
     <style>
+        /* --- GENEL AYARLAR --- */
         :root {
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-main: #2c3e50;
-            --accent-color: #3498db;
-            --up-color: #2ecc71;
-            --down-color: #e74c3c;
+            --bg-color: #050505;
+            --card-bg: #0a0a0a;
+            --neon-purple: #b026ff;
+            --neon-glow: 0 0 10px #b026ff, 0 0 20px #b026ff, 0 0 40px #b026ff;
+            --text-main: #ffffff;
+            --text-dim: #aaaaaa;
+            --font-tech: 'Courier New', Courier, monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-main);
-            margin: 0;
-            padding: 20px;
+            font-family: var(--font-tech);
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        .container {
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            padding: 4rem 1rem;
+            border-bottom: 1px solid #1a1a1a;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: #fff;
+            text-shadow: var(--neon-glow);
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 1.1rem;
             max-width: 600px;
             margin: 0 auto;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
+        /* --- ARAMA ÇUBUĞU --- */
+        .search-container {
+            margin: 2rem auto;
+            max-width: 500px;
+            padding: 0 1rem;
         }
 
-        h1 { font-size: 1.5rem; font-weight: 700; color: var(--accent-color); }
+        input[type="text"] {
+            width: 100%;
+            padding: 15px;
+            background: #000;
+            border: 2px solid var(--neon-purple);
+            color: #fff;
+            font-family: var(--font-tech);
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 0 5px var(--neon-purple);
+            transition: all 0.3s ease;
+        }
 
-        /* Kart Yapısı */
+        input[type="text"]:focus {
+            box-shadow: 0 0 15px var(--neon-purple), inset 0 0 10px rgba(176, 38, 255, 0.2);
+        }
+
+        /* --- KATEGORİLER (GRID) --- */
+        .container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .category-title {
+            color: var(--neon-purple);
+            border-left: 4px solid var(--neon-purple);
+            padding-left: 15px;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            text-shadow: 0 0 5px var(--neon-purple);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 4rem;
+        }
+
+        /* --- KART TASARIMI --- */
         .card {
             background: var(--card-bg);
-            border-radius: 15px;
+            border: 1px solid #333;
             padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        }
-
-        .card-title {
-            font-weight: bold;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        /* Borsa Satırları */
-        .data-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 0;
-            border-bottom: 1px solid #f9f9f9;
-        }
-
-        .price-up { color: var(--up-color); font-weight: bold; }
-        .price-down { color: var(--down-color); font-weight: bold; }
-
-        /* Haber Listesi */
-        .news-item {
-            font-size: 0.9rem;
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-
-        .news-time {
-            font-size: 0.7rem;
-            color: #95a5a6;
-            display: block;
-        }
-
-        /* Kontrol Butonları */
-        .btn {
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            width: 100%;
-            font-size: 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
             cursor: pointer;
         }
 
-        .btn:active { opacity: 0.8; }
+        .card:hover {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 15px rgba(176, 38, 255, 0.3);
+            transform: translateY(-5px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--neon-purple);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card h3 {
+            color: #fff;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .card p {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+        }
+
+        .card-link {
+            display: inline-block;
+            color: var(--neon-purple);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-shadow: 0 0 5px var(--neon-purple);
+        }
+
+        .card-link:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #fff;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-dim);
+            font-size: 0.8rem;
+            border-top: 1px solid #1a1a1a;
+            margin-top: 2rem;
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+    <!-- HEADER -->
     <header>
-        <h1>SmartBot Dashboard</h1>
-        <p style="font-size: 0.8rem; color: #7f8c8d;">Anlık Borsa & Haber Takip Paneli</p>
+        <h1>OSINT HUB</h1>
+        <p class="subtitle">Açık Kaynak İstihbaratı Arama Motoru<br>Tüm Kategoriler Tek Bir Ekranda</p>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Kategori veya araç ara...">
+        </div>
     </header>
 
-    <!-- Borsa Kartı -->
-    <div class="card">
-        <div class="card-title">
-            <span>📈 Piyasa Durumu</span>
-            <span style="font-size: 0.7rem; color: #95a5a6;">Canlı (BTC/USD)</span>
-        </div>
-        <div id="market-data">
-            <div class="data-row">
-                <span>Bitcoin (BTC)</span>
-                <span class="price-up" id="btc-price">Yükleniyor...</span>
-            </div>
-            <div class="data-row">
-                <span>Ethereum (ETH)</span>
-                <span class="price-up" id="eth-price">Yükleniyor...</span>
-            </div>
-            <div class="data-row">
-                <span>Dolar/TL</span>
-                <span id="usd-price">32.45 ₺</span>
+    <!-- ANA İÇERİK -->
+    <div class="container">
+
+        <!-- 1. SOSYAL MEDYA -->
+        <div class="section">
+            <h2 class="category-title">Sosyal Medya İstihbaratı</h2>
+            <div class="grid" id="social-grid">
+                <!-- Kartlar JS ile doldurulacak -->
             </div>
         </div>
-    </div>
 
-    <!-- Haber Kartı -->
-    <div class="card">
-        <div class="card-title">📰 Son Dakika Ajansı</div>
-        <div id="news-data">
-            <div class="news-item">
-                <span class="news-time">10 dk önce</span>
-                Teknoloji dünyasında yeni güvenlik açığı tespit edildi.
-            </div>
-            <div class="news-item">
-                <span class="news-time">25 dk önce</span>
-                Merkez Bankası faiz kararını açıkladı.
-            </div>
+        <!-- 2. DOMAIN & IP -->
+        <div class="section">
+            <h2 class="category-title">Domain & IP Analizi</h2>
+            <div class="grid" id="network-grid"></div>
         </div>
+
+        <!-- 3. GÖRSEL & HARİTA -->
+        <div class="section">
+            <h2 class="category-title">Görsel & Konum (Geo)</h2>
+            <div class="grid" id="geo-grid"></div>
+        </div>
+
+        <!-- 4. VERİ & KOD -->
+        <div class="section">
+            <h2 class="category-title">Veri Sızıntıları & Kod</h2>
+            <div class="grid" id="code-grid"></div>
+        </div>
+
     </div>
 
-    <!-- Kontrol Paneli -->
-    <div class="card">
-        <div class="card-title">⚙️ Bot Ayarları</div>
-        <button class="btn" onclick="refreshData()">Verileri Güncelle</button>
-        <p style="font-size: 0.7rem; margin-top: 10px; text-align: center;">Bot Durumu: <span style="color: green;">Aktif</span></p>
-    </div>
-</div>
+    <!-- FOOTER -->
+    <footer>
+        <p>OSINT Hub v1.0 | Mor Neon Tema | Eğitim Amaçlıdır</p>
+        <p style="margin-top:5px; opacity: 0.6;">Not: Bu araçlar sadece yasal OSINT çalışmaları için kullanılmalıdır.</p>
+    </footer>
 
-<script>
-    // Basit bir API simülasyonu ve Veri Çekme Fonksiyonu
-    async function refreshData() {
-        const btcPriceElement = document.getElementById('btc-price');
-        btcPriceElement.innerText = "Güncelleniyor...";
+    <!-- JAVASCRIPT -->
+    <script>
+        // OSINT Veri Seti (Buraya istediğin kadar araç ekleyebilirsin)
+        const osintTools = {
+            social: [
+                { title: "Sherlock", desc: "Kullanıcı adını tüm sosyal medyada arar.", link: "https://github.com/sherlock-project/sherlock" },
+                { title: "Maigret", desc: "Kullanıcı profili ve rapor oluşturma aracı.", link: "https://github.com/soxoj/maigret" },
+                { title: "WhatsMyName", desc: "Hızlı kullanıcı adı tarama aracı.", link: "https://whatsmyname.app/" },
+                { title: "Epieos", desc: "Google hesabı ve e-posta sorgulama.", link: "https://epieos.com/" },
+                { title: "Twitter Archiving", desc: "Silinmiş tweetleri bulma araçları.", link: "#" }
+            ],
+            network: [
+                { title: "Shodan", desc: "İnternete bağlı cihazları tarar.", link: "https://www.shodan.io/" },
+                { title: "VirusTotal", desc: "Dosya ve URL tarama.", link: "https://www.virustotal.com/" },
+                { title: "Whois Lookup", desc: "Domain sahibi bilgileri.", link: "https://who.is/" },
+                { title: "DNSDumpster", desc: "DNS haritalama ve keşif.", link: "https://dnsdumpster.com/" },
+                { title: "Censys", desc: "İnternet cihaz ve sertifika araması.", link: "https://search.censys.io/" }
+            ],
+            geo: [
+                { title: "Google Earth", desc: "Uydu görüntüleri ve tarihçe.", link: "https://earth.google.com/" },
+                { title: "SunCalc", desc: "Gölge analizi ile saat/tarih tahmini.", link: "https://suncalc.net/" },
+                { title: "GeoGuessr", desc: "Konum tahmin pratiği.", link: "https://www.geoguessr.com/" },
+                { title: "Exif Viewer", desc: "Fotoğraf meta veri okuyucu.", link: "https://exifviewer.org/" },
+                { title: "Wayback Machine", desc: "Web sitelerinin eski halleri.", link: "https://archive.org/web/" }
+            ],
+            code: [
+                { title: "Have I Been Pwned", desc: "E-posta sızıntı kontrolü.", link: "https://haveibeenpwned.com/" },
+                { title: "LeakCheck", desc: "Veri tabanı sızıntıları.", link: "#" },
+                { title: "GitHub Dorking", desc: "Kod içi hassas veri arama.", link: "https://github.com/search" },
+                { title: "Pastebin Search", desc: "Sızdırılan metinler.", link: "https://pastebin.com/" },
+                { title: "DeHashed", desc: "Şifre ve hesap sızıntıları.", link: "https://dehashed.com/" }
+            ]
+        };
 
-        try {
-            // Binance üzerinden gerçek BTC fiyatını çekme örneği
-            const response = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
-            const data = await response.json();
-            const price = parseFloat(data.price).toFixed(2);
-            
-            btcPriceElement.innerText = "$" + price;
-            btcPriceElement.className = "price-up";
-        } catch (error) {
-            btcPriceElement.innerText = "Hata!";
-            console.error("Veri çekilemedi:", error);
+        // Kartları Oluşturan Fonksiyon
+        function createCard(tool) {
+            return `
+                <div class="card" onclick="window.open('${tool.link}', '_blank')">
+                    <h3>${tool.title}</h3>
+                    <p>${tool.desc}</p>
+                    <span class="card-link">ARAÇA GİT →</span>
+                </div>
+            `;
         }
-    }
 
-    // Sayfa açıldığında verileri çek
-    window.onload = refreshData;
-</script>
+        // Sayfa Yüklendiğinde Kartları Yerleştir
+        function renderTools() {
+            const socialContainer = document.getElementById('social-grid');
+            const networkContainer = document.getElementById('network-grid');
+            const geoContainer = document.getElementById('geo-grid');
+            const codeContainer = document.getElementById('code-grid');
 
+            socialContainer.innerHTML = osintTools.social.map(createCard).join('');
+            networkContainer.innerHTML = osintTools.network.map(createCard).join('');
+            geoContainer.innerHTML = osintTools.geo.map(createCard).join('');
+            codeContainer.innerHTML = osintTools.code.map(createCard).join('');
+        }
+
+        // Arama Fonksiyonu
+        document.getElementById('searchInput').addEventListener('keyup', function(e) {
+            const term = e.target.value.toLowerCase();
+            const allCards = document.querySelectorAll('.card');
+
+            allCards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                const desc = card.querySelector('p').innerText.toLowerCase();
+                
+                if (title.includes(term) || desc.includes(term)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Başlangıç
+        window.onload = renderTools;
+    </script>
 </body>
 </html>
